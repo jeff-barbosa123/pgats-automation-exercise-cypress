@@ -8,7 +8,7 @@ const seletores = {
 }
 
 function adicionarProdutoAoCarrinho(idProduto) {
-  cy.get(seletores.botaoAdicionar(idProduto)).scrollIntoView().click()
+  cy.get(seletores.botaoAdicionar(idProduto)).first().scrollIntoView().click()
   cy.get(seletores.modalCarrinho).should('be.visible')
   cy.get(seletores.botaoContinuarComprando).click()
   cy.get(seletores.modalCarrinho).should('not.be.visible')
