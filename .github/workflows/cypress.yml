@@ -1,0 +1,47 @@
+name: Testes E2E - Cypress
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  cypress:
+    name: Executar testes E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Configurar o Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependências e executar os testes
+        uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+
+      - name: Publicar relatório HTML
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-mochawesome
+          path: cypress/reports
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publicar screenshots de falha
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore
+          retention-days: 7
